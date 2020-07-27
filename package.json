@@ -1,0 +1,18 @@
+{
+  "name": "dom-array-methods-foreach-map-filter-sort-reduce",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "parcel public/index.html --out-dir development -p 3000",
+    "build": "parcel build public/index.html --out-dir dist --public-url ./"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/core": "^7.10.5",
+    "@babel/plugin-transform-runtime": "^7.10.5",
+    "@babel/runtime-corejs3": "^7.10.5",
+    "sass": "^1.26.10"
+  }
+}
