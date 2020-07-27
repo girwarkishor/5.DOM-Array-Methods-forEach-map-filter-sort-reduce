@@ -3031,7 +3031,64 @@ module.exports = function (it) {
 
 },{"../../modules/web.dom-collections.iterator":"../node_modules/core-js-pure/modules/web.dom-collections.iterator.js","../array/virtual/for-each":"../node_modules/core-js-pure/stable/array/virtual/for-each.js","../../internals/classof":"../node_modules/core-js-pure/internals/classof.js"}],"../node_modules/@babel/runtime-corejs3/core-js-stable/instance/for-each.js":[function(require,module,exports) {
 module.exports = require("core-js-pure/stable/instance/for-each");
-},{"core-js-pure/stable/instance/for-each":"../node_modules/core-js-pure/stable/instance/for-each.js"}],"../node_modules/core-js-pure/features/object/define-property.js":[function(require,module,exports) {
+},{"core-js-pure/stable/instance/for-each":"../node_modules/core-js-pure/stable/instance/for-each.js"}],"../node_modules/core-js-pure/modules/es.array.sort.js":[function(require,module,exports) {
+'use strict';
+var $ = require('../internals/export');
+var aFunction = require('../internals/a-function');
+var toObject = require('../internals/to-object');
+var fails = require('../internals/fails');
+var arrayMethodIsStrict = require('../internals/array-method-is-strict');
+
+var test = [];
+var nativeSort = test.sort;
+
+// IE8-
+var FAILS_ON_UNDEFINED = fails(function () {
+  test.sort(undefined);
+});
+// V8 bug
+var FAILS_ON_NULL = fails(function () {
+  test.sort(null);
+});
+// Old WebKit
+var STRICT_METHOD = arrayMethodIsStrict('sort');
+
+var FORCED = FAILS_ON_UNDEFINED || !FAILS_ON_NULL || !STRICT_METHOD;
+
+// `Array.prototype.sort` method
+// https://tc39.github.io/ecma262/#sec-array.prototype.sort
+$({ target: 'Array', proto: true, forced: FORCED }, {
+  sort: function sort(comparefn) {
+    return comparefn === undefined
+      ? nativeSort.call(toObject(this))
+      : nativeSort.call(toObject(this), aFunction(comparefn));
+  }
+});
+
+},{"../internals/export":"../node_modules/core-js-pure/internals/export.js","../internals/a-function":"../node_modules/core-js-pure/internals/a-function.js","../internals/to-object":"../node_modules/core-js-pure/internals/to-object.js","../internals/fails":"../node_modules/core-js-pure/internals/fails.js","../internals/array-method-is-strict":"../node_modules/core-js-pure/internals/array-method-is-strict.js"}],"../node_modules/core-js-pure/es/array/virtual/sort.js":[function(require,module,exports) {
+require('../../../modules/es.array.sort');
+var entryVirtual = require('../../../internals/entry-virtual');
+
+module.exports = entryVirtual('Array').sort;
+
+},{"../../../modules/es.array.sort":"../node_modules/core-js-pure/modules/es.array.sort.js","../../../internals/entry-virtual":"../node_modules/core-js-pure/internals/entry-virtual.js"}],"../node_modules/core-js-pure/es/instance/sort.js":[function(require,module,exports) {
+var sort = require('../array/virtual/sort');
+
+var ArrayPrototype = Array.prototype;
+
+module.exports = function (it) {
+  var own = it.sort;
+  return it === ArrayPrototype || (it instanceof Array && own === ArrayPrototype.sort) ? sort : own;
+};
+
+},{"../array/virtual/sort":"../node_modules/core-js-pure/es/array/virtual/sort.js"}],"../node_modules/core-js-pure/stable/instance/sort.js":[function(require,module,exports) {
+var parent = require('../../es/instance/sort');
+
+module.exports = parent;
+
+},{"../../es/instance/sort":"../node_modules/core-js-pure/es/instance/sort.js"}],"../node_modules/@babel/runtime-corejs3/core-js-stable/instance/sort.js":[function(require,module,exports) {
+module.exports = require("core-js-pure/stable/instance/sort");
+},{"core-js-pure/stable/instance/sort":"../node_modules/core-js-pure/stable/instance/sort.js"}],"../node_modules/core-js-pure/features/object/define-property.js":[function(require,module,exports) {
 var parent = require('../../es/object/define-property');
 
 module.exports = parent;
@@ -4339,6 +4396,8 @@ var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-sta
 
 var _forEach = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/for-each"));
 
+var _sort = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/sort"));
+
 var _defineProperty3 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/defineProperty"));
 
 var _map = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/map"));
@@ -4414,6 +4473,14 @@ function doubleMoney() {
     });
   });
   updateDOM();
+} // Sort users by richest
+
+
+function sortByRichest() {
+  (0, _sort.default)(data).call(data, function (a, b) {
+    return b.money - a.money;
+  });
+  updateDOM();
 } // Add new obj to data err
 
 
@@ -4445,7 +4512,8 @@ function formatMoney(number) {
 
 addUserBtn.addEventListener("click", getRandomUser);
 doubleBtn.addEventListener("click", doubleMoney);
-},{"@babel/runtime-corejs3/core-js-stable/object/define-property":"../node_modules/@babel/runtime-corejs3/core-js-stable/object/define-property.js","@babel/runtime-corejs3/core-js-stable/object/define-properties":"../node_modules/@babel/runtime-corejs3/core-js-stable/object/define-properties.js","@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptors":"../node_modules/@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptors.js","@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptor":"../node_modules/@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptor.js","@babel/runtime-corejs3/core-js-stable/instance/filter":"../node_modules/@babel/runtime-corejs3/core-js-stable/instance/filter.js","@babel/runtime-corejs3/core-js-stable/object/get-own-property-symbols":"../node_modules/@babel/runtime-corejs3/core-js-stable/object/get-own-property-symbols.js","@babel/runtime-corejs3/core-js-stable/object/keys":"../node_modules/@babel/runtime-corejs3/core-js-stable/object/keys.js","@babel/runtime-corejs3/regenerator":"../node_modules/@babel/runtime-corejs3/regenerator/index.js","@babel/runtime-corejs3/core-js-stable/instance/concat":"../node_modules/@babel/runtime-corejs3/core-js-stable/instance/concat.js","@babel/runtime-corejs3/core-js-stable/instance/for-each":"../node_modules/@babel/runtime-corejs3/core-js-stable/instance/for-each.js","@babel/runtime-corejs3/helpers/defineProperty":"../node_modules/@babel/runtime-corejs3/helpers/defineProperty.js","@babel/runtime-corejs3/core-js-stable/instance/map":"../node_modules/@babel/runtime-corejs3/core-js-stable/instance/map.js","@babel/runtime-corejs3/helpers/asyncToGenerator":"../node_modules/@babel/runtime-corejs3/helpers/asyncToGenerator.js","./scss/main.scss":"../src/scss/main.scss"}],"C:/Users/girwa/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+sortBtn.addEventListener("click", sortByRichest);
+},{"@babel/runtime-corejs3/core-js-stable/object/define-property":"../node_modules/@babel/runtime-corejs3/core-js-stable/object/define-property.js","@babel/runtime-corejs3/core-js-stable/object/define-properties":"../node_modules/@babel/runtime-corejs3/core-js-stable/object/define-properties.js","@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptors":"../node_modules/@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptors.js","@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptor":"../node_modules/@babel/runtime-corejs3/core-js-stable/object/get-own-property-descriptor.js","@babel/runtime-corejs3/core-js-stable/instance/filter":"../node_modules/@babel/runtime-corejs3/core-js-stable/instance/filter.js","@babel/runtime-corejs3/core-js-stable/object/get-own-property-symbols":"../node_modules/@babel/runtime-corejs3/core-js-stable/object/get-own-property-symbols.js","@babel/runtime-corejs3/core-js-stable/object/keys":"../node_modules/@babel/runtime-corejs3/core-js-stable/object/keys.js","@babel/runtime-corejs3/regenerator":"../node_modules/@babel/runtime-corejs3/regenerator/index.js","@babel/runtime-corejs3/core-js-stable/instance/concat":"../node_modules/@babel/runtime-corejs3/core-js-stable/instance/concat.js","@babel/runtime-corejs3/core-js-stable/instance/for-each":"../node_modules/@babel/runtime-corejs3/core-js-stable/instance/for-each.js","@babel/runtime-corejs3/core-js-stable/instance/sort":"../node_modules/@babel/runtime-corejs3/core-js-stable/instance/sort.js","@babel/runtime-corejs3/helpers/defineProperty":"../node_modules/@babel/runtime-corejs3/helpers/defineProperty.js","@babel/runtime-corejs3/core-js-stable/instance/map":"../node_modules/@babel/runtime-corejs3/core-js-stable/instance/map.js","@babel/runtime-corejs3/helpers/asyncToGenerator":"../node_modules/@babel/runtime-corejs3/helpers/asyncToGenerator.js","./scss/main.scss":"../src/scss/main.scss"}],"C:/Users/girwa/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
