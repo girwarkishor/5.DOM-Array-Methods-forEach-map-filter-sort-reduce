@@ -1559,39 +1559,13 @@ module.exports = parent;
 
 },{"../../es/instance/concat":"../node_modules/core-js-pure/es/instance/concat.js"}],"../node_modules/@babel/runtime-corejs3/core-js-stable/instance/concat.js":[function(require,module,exports) {
 module.exports = require("core-js-pure/stable/instance/concat");
-},{"core-js-pure/stable/instance/concat":"../node_modules/core-js-pure/stable/instance/concat.js"}],"../node_modules/core-js-pure/modules/es.object.to-string.js":[function(require,module,exports) {
-// empty
+},{"core-js-pure/stable/instance/concat":"../node_modules/core-js-pure/stable/instance/concat.js"}],"../node_modules/core-js-pure/internals/add-to-unscopables.js":[function(require,module,exports) {
+module.exports = function () { /* empty */ };
 
-},{}],"../node_modules/core-js-pure/internals/string-multibyte.js":[function(require,module,exports) {
-var toInteger = require('../internals/to-integer');
-var requireObjectCoercible = require('../internals/require-object-coercible');
+},{}],"../node_modules/core-js-pure/internals/iterators.js":[function(require,module,exports) {
+module.exports = {};
 
-// `String.prototype.{ codePointAt, at }` methods implementation
-var createMethod = function (CONVERT_TO_STRING) {
-  return function ($this, pos) {
-    var S = String(requireObjectCoercible($this));
-    var position = toInteger(pos);
-    var size = S.length;
-    var first, second;
-    if (position < 0 || position >= size) return CONVERT_TO_STRING ? '' : undefined;
-    first = S.charCodeAt(position);
-    return first < 0xD800 || first > 0xDBFF || position + 1 === size
-      || (second = S.charCodeAt(position + 1)) < 0xDC00 || second > 0xDFFF
-        ? CONVERT_TO_STRING ? S.charAt(position) : first
-        : CONVERT_TO_STRING ? S.slice(position, position + 2) : (first - 0xD800 << 10) + (second - 0xDC00) + 0x10000;
-  };
-};
-
-module.exports = {
-  // `String.prototype.codePointAt` method
-  // https://tc39.github.io/ecma262/#sec-string.prototype.codepointat
-  codeAt: createMethod(false),
-  // `String.prototype.at` method
-  // https://github.com/mathiasbynens/String.prototype.at
-  charAt: createMethod(true)
-};
-
-},{"../internals/to-integer":"../node_modules/core-js-pure/internals/to-integer.js","../internals/require-object-coercible":"../node_modules/core-js-pure/internals/require-object-coercible.js"}],"../node_modules/core-js-pure/internals/inspect-source.js":[function(require,module,exports) {
+},{}],"../node_modules/core-js-pure/internals/inspect-source.js":[function(require,module,exports) {
 var store = require('../internals/shared-store');
 
 var functionToString = Function.toString;
@@ -2021,10 +1995,7 @@ module.exports = function (it, TAG, STATIC, SET_METHOD) {
   }
 };
 
-},{"../internals/to-string-tag-support":"../node_modules/core-js-pure/internals/to-string-tag-support.js","../internals/object-define-property":"../node_modules/core-js-pure/internals/object-define-property.js","../internals/create-non-enumerable-property":"../node_modules/core-js-pure/internals/create-non-enumerable-property.js","../internals/has":"../node_modules/core-js-pure/internals/has.js","../internals/object-to-string":"../node_modules/core-js-pure/internals/object-to-string.js","../internals/well-known-symbol":"../node_modules/core-js-pure/internals/well-known-symbol.js"}],"../node_modules/core-js-pure/internals/iterators.js":[function(require,module,exports) {
-module.exports = {};
-
-},{}],"../node_modules/core-js-pure/internals/create-iterator-constructor.js":[function(require,module,exports) {
+},{"../internals/to-string-tag-support":"../node_modules/core-js-pure/internals/to-string-tag-support.js","../internals/object-define-property":"../node_modules/core-js-pure/internals/object-define-property.js","../internals/create-non-enumerable-property":"../node_modules/core-js-pure/internals/create-non-enumerable-property.js","../internals/has":"../node_modules/core-js-pure/internals/has.js","../internals/object-to-string":"../node_modules/core-js-pure/internals/object-to-string.js","../internals/well-known-symbol":"../node_modules/core-js-pure/internals/well-known-symbol.js"}],"../node_modules/core-js-pure/internals/create-iterator-constructor.js":[function(require,module,exports) {
 'use strict';
 var IteratorPrototype = require('../internals/iterators-core').IteratorPrototype;
 var create = require('../internals/object-create');
@@ -2177,41 +2148,7 @@ module.exports = function (Iterable, NAME, IteratorConstructor, next, DEFAULT, I
   return methods;
 };
 
-},{"../internals/export":"../node_modules/core-js-pure/internals/export.js","../internals/create-iterator-constructor":"../node_modules/core-js-pure/internals/create-iterator-constructor.js","../internals/object-get-prototype-of":"../node_modules/core-js-pure/internals/object-get-prototype-of.js","../internals/object-set-prototype-of":"../node_modules/core-js-pure/internals/object-set-prototype-of.js","../internals/set-to-string-tag":"../node_modules/core-js-pure/internals/set-to-string-tag.js","../internals/create-non-enumerable-property":"../node_modules/core-js-pure/internals/create-non-enumerable-property.js","../internals/redefine":"../node_modules/core-js-pure/internals/redefine.js","../internals/well-known-symbol":"../node_modules/core-js-pure/internals/well-known-symbol.js","../internals/is-pure":"../node_modules/core-js-pure/internals/is-pure.js","../internals/iterators":"../node_modules/core-js-pure/internals/iterators.js","../internals/iterators-core":"../node_modules/core-js-pure/internals/iterators-core.js"}],"../node_modules/core-js-pure/modules/es.string.iterator.js":[function(require,module,exports) {
-'use strict';
-var charAt = require('../internals/string-multibyte').charAt;
-var InternalStateModule = require('../internals/internal-state');
-var defineIterator = require('../internals/define-iterator');
-
-var STRING_ITERATOR = 'String Iterator';
-var setInternalState = InternalStateModule.set;
-var getInternalState = InternalStateModule.getterFor(STRING_ITERATOR);
-
-// `String.prototype[@@iterator]` method
-// https://tc39.github.io/ecma262/#sec-string.prototype-@@iterator
-defineIterator(String, 'String', function (iterated) {
-  setInternalState(this, {
-    type: STRING_ITERATOR,
-    string: String(iterated),
-    index: 0
-  });
-// `%StringIteratorPrototype%.next` method
-// https://tc39.github.io/ecma262/#sec-%stringiteratorprototype%.next
-}, function next() {
-  var state = getInternalState(this);
-  var string = state.string;
-  var index = state.index;
-  var point;
-  if (index >= string.length) return { value: undefined, done: true };
-  point = charAt(string, index);
-  state.index += point.length;
-  return { value: point, done: false };
-});
-
-},{"../internals/string-multibyte":"../node_modules/core-js-pure/internals/string-multibyte.js","../internals/internal-state":"../node_modules/core-js-pure/internals/internal-state.js","../internals/define-iterator":"../node_modules/core-js-pure/internals/define-iterator.js"}],"../node_modules/core-js-pure/internals/add-to-unscopables.js":[function(require,module,exports) {
-module.exports = function () { /* empty */ };
-
-},{}],"../node_modules/core-js-pure/modules/es.array.iterator.js":[function(require,module,exports) {
+},{"../internals/export":"../node_modules/core-js-pure/internals/export.js","../internals/create-iterator-constructor":"../node_modules/core-js-pure/internals/create-iterator-constructor.js","../internals/object-get-prototype-of":"../node_modules/core-js-pure/internals/object-get-prototype-of.js","../internals/object-set-prototype-of":"../node_modules/core-js-pure/internals/object-set-prototype-of.js","../internals/set-to-string-tag":"../node_modules/core-js-pure/internals/set-to-string-tag.js","../internals/create-non-enumerable-property":"../node_modules/core-js-pure/internals/create-non-enumerable-property.js","../internals/redefine":"../node_modules/core-js-pure/internals/redefine.js","../internals/well-known-symbol":"../node_modules/core-js-pure/internals/well-known-symbol.js","../internals/is-pure":"../node_modules/core-js-pure/internals/is-pure.js","../internals/iterators":"../node_modules/core-js-pure/internals/iterators.js","../internals/iterators-core":"../node_modules/core-js-pure/internals/iterators-core.js"}],"../node_modules/core-js-pure/modules/es.array.iterator.js":[function(require,module,exports) {
 'use strict';
 var toIndexedObject = require('../internals/to-indexed-object');
 var addToUnscopables = require('../internals/add-to-unscopables');
@@ -2324,7 +2261,235 @@ for (var COLLECTION_NAME in DOMIterables) {
   Iterators[COLLECTION_NAME] = Iterators.Array;
 }
 
-},{"./es.array.iterator":"../node_modules/core-js-pure/modules/es.array.iterator.js","../internals/dom-iterables":"../node_modules/core-js-pure/internals/dom-iterables.js","../internals/global":"../node_modules/core-js-pure/internals/global.js","../internals/classof":"../node_modules/core-js-pure/internals/classof.js","../internals/create-non-enumerable-property":"../node_modules/core-js-pure/internals/create-non-enumerable-property.js","../internals/iterators":"../node_modules/core-js-pure/internals/iterators.js","../internals/well-known-symbol":"../node_modules/core-js-pure/internals/well-known-symbol.js"}],"../node_modules/core-js-pure/internals/native-promise-constructor.js":[function(require,module,exports) {
+},{"./es.array.iterator":"../node_modules/core-js-pure/modules/es.array.iterator.js","../internals/dom-iterables":"../node_modules/core-js-pure/internals/dom-iterables.js","../internals/global":"../node_modules/core-js-pure/internals/global.js","../internals/classof":"../node_modules/core-js-pure/internals/classof.js","../internals/create-non-enumerable-property":"../node_modules/core-js-pure/internals/create-non-enumerable-property.js","../internals/iterators":"../node_modules/core-js-pure/internals/iterators.js","../internals/well-known-symbol":"../node_modules/core-js-pure/internals/well-known-symbol.js"}],"../node_modules/core-js-pure/internals/array-iteration.js":[function(require,module,exports) {
+var bind = require('../internals/function-bind-context');
+var IndexedObject = require('../internals/indexed-object');
+var toObject = require('../internals/to-object');
+var toLength = require('../internals/to-length');
+var arraySpeciesCreate = require('../internals/array-species-create');
+
+var push = [].push;
+
+// `Array.prototype.{ forEach, map, filter, some, every, find, findIndex }` methods implementation
+var createMethod = function (TYPE) {
+  var IS_MAP = TYPE == 1;
+  var IS_FILTER = TYPE == 2;
+  var IS_SOME = TYPE == 3;
+  var IS_EVERY = TYPE == 4;
+  var IS_FIND_INDEX = TYPE == 6;
+  var NO_HOLES = TYPE == 5 || IS_FIND_INDEX;
+  return function ($this, callbackfn, that, specificCreate) {
+    var O = toObject($this);
+    var self = IndexedObject(O);
+    var boundFunction = bind(callbackfn, that, 3);
+    var length = toLength(self.length);
+    var index = 0;
+    var create = specificCreate || arraySpeciesCreate;
+    var target = IS_MAP ? create($this, length) : IS_FILTER ? create($this, 0) : undefined;
+    var value, result;
+    for (;length > index; index++) if (NO_HOLES || index in self) {
+      value = self[index];
+      result = boundFunction(value, index, O);
+      if (TYPE) {
+        if (IS_MAP) target[index] = result; // map
+        else if (result) switch (TYPE) {
+          case 3: return true;              // some
+          case 5: return value;             // find
+          case 6: return index;             // findIndex
+          case 2: push.call(target, value); // filter
+        } else if (IS_EVERY) return false;  // every
+      }
+    }
+    return IS_FIND_INDEX ? -1 : IS_SOME || IS_EVERY ? IS_EVERY : target;
+  };
+};
+
+module.exports = {
+  // `Array.prototype.forEach` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.foreach
+  forEach: createMethod(0),
+  // `Array.prototype.map` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.map
+  map: createMethod(1),
+  // `Array.prototype.filter` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.filter
+  filter: createMethod(2),
+  // `Array.prototype.some` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.some
+  some: createMethod(3),
+  // `Array.prototype.every` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.every
+  every: createMethod(4),
+  // `Array.prototype.find` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.find
+  find: createMethod(5),
+  // `Array.prototype.findIndex` method
+  // https://tc39.github.io/ecma262/#sec-array.prototype.findIndex
+  findIndex: createMethod(6)
+};
+
+},{"../internals/function-bind-context":"../node_modules/core-js-pure/internals/function-bind-context.js","../internals/indexed-object":"../node_modules/core-js-pure/internals/indexed-object.js","../internals/to-object":"../node_modules/core-js-pure/internals/to-object.js","../internals/to-length":"../node_modules/core-js-pure/internals/to-length.js","../internals/array-species-create":"../node_modules/core-js-pure/internals/array-species-create.js"}],"../node_modules/core-js-pure/internals/array-method-is-strict.js":[function(require,module,exports) {
+'use strict';
+var fails = require('../internals/fails');
+
+module.exports = function (METHOD_NAME, argument) {
+  var method = [][METHOD_NAME];
+  return !!method && fails(function () {
+    // eslint-disable-next-line no-useless-call,no-throw-literal
+    method.call(null, argument || function () { throw 1; }, 1);
+  });
+};
+
+},{"../internals/fails":"../node_modules/core-js-pure/internals/fails.js"}],"../node_modules/core-js-pure/internals/array-method-uses-to-length.js":[function(require,module,exports) {
+var DESCRIPTORS = require('../internals/descriptors');
+var fails = require('../internals/fails');
+var has = require('../internals/has');
+
+var defineProperty = Object.defineProperty;
+var cache = {};
+
+var thrower = function (it) { throw it; };
+
+module.exports = function (METHOD_NAME, options) {
+  if (has(cache, METHOD_NAME)) return cache[METHOD_NAME];
+  if (!options) options = {};
+  var method = [][METHOD_NAME];
+  var ACCESSORS = has(options, 'ACCESSORS') ? options.ACCESSORS : false;
+  var argument0 = has(options, 0) ? options[0] : thrower;
+  var argument1 = has(options, 1) ? options[1] : undefined;
+
+  return cache[METHOD_NAME] = !!method && !fails(function () {
+    if (ACCESSORS && !DESCRIPTORS) return true;
+    var O = { length: -1 };
+
+    if (ACCESSORS) defineProperty(O, 1, { enumerable: true, get: thrower });
+    else O[1] = 1;
+
+    method.call(O, argument0, argument1);
+  });
+};
+
+},{"../internals/descriptors":"../node_modules/core-js-pure/internals/descriptors.js","../internals/fails":"../node_modules/core-js-pure/internals/fails.js","../internals/has":"../node_modules/core-js-pure/internals/has.js"}],"../node_modules/core-js-pure/internals/array-for-each.js":[function(require,module,exports) {
+'use strict';
+var $forEach = require('../internals/array-iteration').forEach;
+var arrayMethodIsStrict = require('../internals/array-method-is-strict');
+var arrayMethodUsesToLength = require('../internals/array-method-uses-to-length');
+
+var STRICT_METHOD = arrayMethodIsStrict('forEach');
+var USES_TO_LENGTH = arrayMethodUsesToLength('forEach');
+
+// `Array.prototype.forEach` method implementation
+// https://tc39.github.io/ecma262/#sec-array.prototype.foreach
+module.exports = (!STRICT_METHOD || !USES_TO_LENGTH) ? function forEach(callbackfn /* , thisArg */) {
+  return $forEach(this, callbackfn, arguments.length > 1 ? arguments[1] : undefined);
+} : [].forEach;
+
+},{"../internals/array-iteration":"../node_modules/core-js-pure/internals/array-iteration.js","../internals/array-method-is-strict":"../node_modules/core-js-pure/internals/array-method-is-strict.js","../internals/array-method-uses-to-length":"../node_modules/core-js-pure/internals/array-method-uses-to-length.js"}],"../node_modules/core-js-pure/modules/es.array.for-each.js":[function(require,module,exports) {
+'use strict';
+var $ = require('../internals/export');
+var forEach = require('../internals/array-for-each');
+
+// `Array.prototype.forEach` method
+// https://tc39.github.io/ecma262/#sec-array.prototype.foreach
+$({ target: 'Array', proto: true, forced: [].forEach != forEach }, {
+  forEach: forEach
+});
+
+},{"../internals/export":"../node_modules/core-js-pure/internals/export.js","../internals/array-for-each":"../node_modules/core-js-pure/internals/array-for-each.js"}],"../node_modules/core-js-pure/es/array/virtual/for-each.js":[function(require,module,exports) {
+require('../../../modules/es.array.for-each');
+var entryVirtual = require('../../../internals/entry-virtual');
+
+module.exports = entryVirtual('Array').forEach;
+
+},{"../../../modules/es.array.for-each":"../node_modules/core-js-pure/modules/es.array.for-each.js","../../../internals/entry-virtual":"../node_modules/core-js-pure/internals/entry-virtual.js"}],"../node_modules/core-js-pure/stable/array/virtual/for-each.js":[function(require,module,exports) {
+var parent = require('../../../es/array/virtual/for-each');
+
+module.exports = parent;
+
+},{"../../../es/array/virtual/for-each":"../node_modules/core-js-pure/es/array/virtual/for-each.js"}],"../node_modules/core-js-pure/stable/instance/for-each.js":[function(require,module,exports) {
+require('../../modules/web.dom-collections.iterator');
+var forEach = require('../array/virtual/for-each');
+var classof = require('../../internals/classof');
+var ArrayPrototype = Array.prototype;
+
+var DOMIterables = {
+  DOMTokenList: true,
+  NodeList: true
+};
+
+module.exports = function (it) {
+  var own = it.forEach;
+  return it === ArrayPrototype || (it instanceof Array && own === ArrayPrototype.forEach)
+    // eslint-disable-next-line no-prototype-builtins
+    || DOMIterables.hasOwnProperty(classof(it)) ? forEach : own;
+};
+
+},{"../../modules/web.dom-collections.iterator":"../node_modules/core-js-pure/modules/web.dom-collections.iterator.js","../array/virtual/for-each":"../node_modules/core-js-pure/stable/array/virtual/for-each.js","../../internals/classof":"../node_modules/core-js-pure/internals/classof.js"}],"../node_modules/@babel/runtime-corejs3/core-js-stable/instance/for-each.js":[function(require,module,exports) {
+module.exports = require("core-js-pure/stable/instance/for-each");
+},{"core-js-pure/stable/instance/for-each":"../node_modules/core-js-pure/stable/instance/for-each.js"}],"../node_modules/core-js-pure/modules/es.object.to-string.js":[function(require,module,exports) {
+// empty
+
+},{}],"../node_modules/core-js-pure/internals/string-multibyte.js":[function(require,module,exports) {
+var toInteger = require('../internals/to-integer');
+var requireObjectCoercible = require('../internals/require-object-coercible');
+
+// `String.prototype.{ codePointAt, at }` methods implementation
+var createMethod = function (CONVERT_TO_STRING) {
+  return function ($this, pos) {
+    var S = String(requireObjectCoercible($this));
+    var position = toInteger(pos);
+    var size = S.length;
+    var first, second;
+    if (position < 0 || position >= size) return CONVERT_TO_STRING ? '' : undefined;
+    first = S.charCodeAt(position);
+    return first < 0xD800 || first > 0xDBFF || position + 1 === size
+      || (second = S.charCodeAt(position + 1)) < 0xDC00 || second > 0xDFFF
+        ? CONVERT_TO_STRING ? S.charAt(position) : first
+        : CONVERT_TO_STRING ? S.slice(position, position + 2) : (first - 0xD800 << 10) + (second - 0xDC00) + 0x10000;
+  };
+};
+
+module.exports = {
+  // `String.prototype.codePointAt` method
+  // https://tc39.github.io/ecma262/#sec-string.prototype.codepointat
+  codeAt: createMethod(false),
+  // `String.prototype.at` method
+  // https://github.com/mathiasbynens/String.prototype.at
+  charAt: createMethod(true)
+};
+
+},{"../internals/to-integer":"../node_modules/core-js-pure/internals/to-integer.js","../internals/require-object-coercible":"../node_modules/core-js-pure/internals/require-object-coercible.js"}],"../node_modules/core-js-pure/modules/es.string.iterator.js":[function(require,module,exports) {
+'use strict';
+var charAt = require('../internals/string-multibyte').charAt;
+var InternalStateModule = require('../internals/internal-state');
+var defineIterator = require('../internals/define-iterator');
+
+var STRING_ITERATOR = 'String Iterator';
+var setInternalState = InternalStateModule.set;
+var getInternalState = InternalStateModule.getterFor(STRING_ITERATOR);
+
+// `String.prototype[@@iterator]` method
+// https://tc39.github.io/ecma262/#sec-string.prototype-@@iterator
+defineIterator(String, 'String', function (iterated) {
+  setInternalState(this, {
+    type: STRING_ITERATOR,
+    string: String(iterated),
+    index: 0
+  });
+// `%StringIteratorPrototype%.next` method
+// https://tc39.github.io/ecma262/#sec-%stringiteratorprototype%.next
+}, function next() {
+  var state = getInternalState(this);
+  var string = state.string;
+  var index = state.index;
+  var point;
+  if (index >= string.length) return { value: undefined, done: true };
+  point = charAt(string, index);
+  state.index += point.length;
+  return { value: point, done: false };
+});
+
+},{"../internals/string-multibyte":"../node_modules/core-js-pure/internals/string-multibyte.js","../internals/internal-state":"../node_modules/core-js-pure/internals/internal-state.js","../internals/define-iterator":"../node_modules/core-js-pure/internals/define-iterator.js"}],"../node_modules/core-js-pure/internals/native-promise-constructor.js":[function(require,module,exports) {
 
 var global = require('../internals/global');
 
@@ -3484,6 +3649,8 @@ var _regenerator = _interopRequireDefault(require("@babel/runtime-corejs3/regene
 
 var _concat = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/concat"));
 
+var _forEach = _interopRequireDefault(require("@babel/runtime-corejs3/core-js-stable/instance/for-each"));
+
 var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime-corejs3/helpers/asyncToGenerator"));
 
 require("./scss/main.scss");
@@ -3508,27 +3675,27 @@ function getRandomUser() {
 
 function _getRandomUser() {
   _getRandomUser = (0, _asyncToGenerator2.default)( /*#__PURE__*/_regenerator.default.mark(function _callee() {
-    var _context;
+    var _context2;
 
     var res, data, user, newUser;
-    return _regenerator.default.wrap(function _callee$(_context2) {
+    return _regenerator.default.wrap(function _callee$(_context3) {
       while (1) {
-        switch (_context2.prev = _context2.next) {
+        switch (_context3.prev = _context3.next) {
           case 0:
-            _context2.next = 2;
+            _context3.next = 2;
             return fetch("https://randomuser.me/api");
 
           case 2:
-            res = _context2.sent;
-            _context2.next = 5;
+            res = _context3.sent;
+            _context3.next = 5;
             return res.json();
 
           case 5:
-            data = _context2.sent;
+            data = _context3.sent;
             //   console.log(data);
             user = data.results[0];
             newUser = {
-              name: (0, _concat.default)(_context = "".concat(user.name.first, " ")).call(_context, user.name.last),
+              name: (0, _concat.default)(_context2 = "".concat(user.name.first, " ")).call(_context2, user.name.last),
               money: Math.floor(Math.random() * 1000000)
             }; //   console.log(newUser);
 
@@ -3536,7 +3703,7 @@ function _getRandomUser() {
 
           case 9:
           case "end":
-            return _context2.stop();
+            return _context3.stop();
         }
       }
     }, _callee);
@@ -3546,8 +3713,32 @@ function _getRandomUser() {
 
 function addData(obj) {
   data.push(obj);
-}
-},{"@babel/runtime-corejs3/regenerator":"../node_modules/@babel/runtime-corejs3/regenerator/index.js","@babel/runtime-corejs3/core-js-stable/instance/concat":"../node_modules/@babel/runtime-corejs3/core-js-stable/instance/concat.js","@babel/runtime-corejs3/helpers/asyncToGenerator":"../node_modules/@babel/runtime-corejs3/helpers/asyncToGenerator.js","./scss/main.scss":"../src/scss/main.scss"}],"C:/Users/girwa/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
+  updateDOM();
+} // Update DOM
+
+
+function updateDOM() {
+  var providedData = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : data;
+  // Clear main div
+  main.innerHTML = "<h2><strong>Person</strong> Wealth</h2>";
+  (0, _forEach.default)(providedData).call(providedData, function (item) {
+    var _context;
+
+    var element = document.createElement("div");
+    element.classList.add("person");
+    element.innerHTML = (0, _concat.default)(_context = "<strong>".concat(item.name, "</strong> ")).call(_context, formatMoney(item.money));
+    main.appendChild(element);
+  });
+} // Format number as Money
+
+
+function formatMoney(number) {
+  return "$" + number.toFixed(2).replace(/\d(?=(\d{3})+\.)/g, "$&,");
+} // Event listeners
+
+
+addUserBtn.addEventListener("click", getRandomUser);
+},{"@babel/runtime-corejs3/regenerator":"../node_modules/@babel/runtime-corejs3/regenerator/index.js","@babel/runtime-corejs3/core-js-stable/instance/concat":"../node_modules/@babel/runtime-corejs3/core-js-stable/instance/concat.js","@babel/runtime-corejs3/core-js-stable/instance/for-each":"../node_modules/@babel/runtime-corejs3/core-js-stable/instance/for-each.js","@babel/runtime-corejs3/helpers/asyncToGenerator":"../node_modules/@babel/runtime-corejs3/helpers/asyncToGenerator.js","./scss/main.scss":"../src/scss/main.scss"}],"C:/Users/girwa/AppData/Roaming/npm/node_modules/parcel-bundler/src/builtins/hmr-runtime.js":[function(require,module,exports) {
 var global = arguments[3];
 var OVERLAY_ID = '__parcel__error__overlay__';
 var OldModule = module.bundle.Module;
